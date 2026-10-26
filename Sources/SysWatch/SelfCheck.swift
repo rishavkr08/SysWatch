@@ -43,6 +43,18 @@ func selfCheck() {
     let g = groups.first { $0.key == "Google Chrome" }
     check(groups.count == 2 && g?.procs.count == 2 && g?.footprintMB == 800 && g?.heaviest.pid == 101, "group totals and heaviest member")
 
+    // A mixed "node" group: the heaviest node (an editor helper) is not Claude's, a lighter one is.
+    var mixed = table
+    mixed[60] = proc(60, 1, "/usr/local/bin/node /editor/server.js", mb: 900)
+    mixed[61] = proc(61, 30, "/usr/local/bin/node dev-server.js", mb: 300)   // 30 = zsh under Claude session 20
+    mixed[62] = proc(62, 61, "/usr/local/bin/node worker.js", mb: 100)
+    let node = groupProcs(Array(mixed.values)).first { $0.key == "node" }!
+    check(node.heaviest.pid == 60, "heaviest node is the editor helper")
+    check(claudeTarget(in: node, table: mixed)?.proc.pid == 61 && claudeTarget(in: node, table: mixed)?.claude.pid == 20,
+          "Ask Claude targets the heaviest Claude-started member, not the heaviest member")
+    let editorOnly = groupProcs([mixed[60]!]).first!
+    check(claudeTarget(in: editorOnly, table: mixed) == nil, "no target when no member is Claude's")
+
     let a = Alerter()
     var t = Thresholds()
     t.cpuPct = 80

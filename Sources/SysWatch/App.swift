@@ -91,7 +91,7 @@ final class Model: ObservableObject {
     var recentAlerts: Int { alerts.filter { $0.date > Date().addingTimeInterval(-600) }.count }
 
     func claude(for p: Proc) -> Proc? { claudeAncestor(of: p.pid, in: table) }
-    func claude(for g: AppGroup) -> Proc? { g.procs.lazy.compactMap { self.claude(for: $0) }.first }
+    func claude(for g: AppGroup) -> Proc? { claudeTarget(in: g, table: table)?.claude }
     func project(for claude: Proc) -> String? {
         guard let dir = claudeCwd[claude.pid], !dir.isEmpty else { return nil }
         return dir.split(separator: "/").last.map(String.init)
@@ -156,8 +156,20 @@ final class Model: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.tick() }
     }
 
+    /// From a group row: re-resolve the group from the latest sample, since the row may be seconds old.
+    func askClaude(group key: String) {
+        guard let g = groupProcs(snap.procs).first(where: { $0.key == key }) else { status = "\(key) is no longer running"; return }
+        guard let t = claudeTarget(in: g, table: table) else { status = "No \(key) process is running under a Claude Code session any more"; return }
+        ask(t.proc, claude: t.claude)
+    }
+
     func askClaude(_ pid: pid_t) {
-        guard let p = table[pid], let c = claude(for: p) else { status = "No Claude Code session owns pid \(pid)"; return }
+        guard let p = table[pid] else { status = "pid \(pid) has already exited"; return }
+        guard let c = claude(for: p) else { status = "\(p.name) (pid \(pid)) was not started by a Claude Code session"; return }
+        ask(p, claude: c)
+    }
+
+    private func ask(_ p: Proc, claude c: Proc) {
         let snap = self.snap
         status = "Building prompt…"
         DispatchQueue.global().async {
@@ -534,7 +546,7 @@ struct GroupRow: View {
                     .foregroundStyle(memSev.textColor).frame(width: 60, alignment: .trailing)
                 Text("\(Int(g.cpu))%").monospacedDigit().font(.caption).foregroundStyle(cpuSev.textColor).frame(width: 36, alignment: .trailing)
                 Menu {
-                    if claude != nil { Button("Ask Claude to optimise") { model.askClaude(g.heaviest.pid) } }
+                    if claude != nil { Button("Ask Claude to optimise") { model.askClaude(group: g.key) } }
                     Button(g.procs.count > 1 ? "Quit all \(g.procs.count) processes" : "Quit") { model.quit(group: g, force: false) }
                     Button(g.procs.count > 1 ? "Force quit all" : "Force quit", role: .destructive) { model.quit(group: g, force: true) }
                 } label: {

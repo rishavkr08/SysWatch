@@ -20,6 +20,16 @@ func claudeAncestor(of pid: pid_t, in table: [pid_t: Proc]) -> Proc? {
     return nil
 }
 
+/// The process a group's "Ask Claude" acts on: its heaviest member that a Claude Code session started.
+/// Not simply the heaviest member: a group such as "node" mixes Claude-started processes with editor
+/// and dev-server ones, and the heaviest is often not Claude's.
+func claudeTarget(in g: AppGroup, table: [pid_t: Proc]) -> (proc: Proc, claude: Proc)? {
+    for p in g.procs.sorted(by: { $0.footprintMB > $1.footprintMB }) {
+        if let c = claudeAncestor(of: p.pid, in: table) { return (p, c) }
+    }
+    return nil
+}
+
 func cwd(of pid: pid_t) -> String {
     // `lsof -Fn` prints "p<pid>" then "n<path>"
     shell("/usr/sbin/lsof", ["-a", "-d", "cwd", "-p", "\(pid)", "-Fn"])
