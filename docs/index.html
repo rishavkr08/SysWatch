@@ -85,6 +85,13 @@
     font-weight: 650; font-size: 16px; text-decoration: none;
   }
   .btn:hover { filter: brightness(1.08); }
+  .btn.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--line); min-height: 44px; font-weight: 600; }
+  .btn.secondary:hover { filter: none; background: var(--code-bg); }
+  .pill { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: var(--accent); color: var(--accent-text); font-size: 11.5px; font-weight: 650; vertical-align: 1px; }
+  .or.alt { margin-top: 28px; }
+  .cmd.primary { border: 1.5px solid var(--accent); background: var(--surface); }
+  .cmd.primary .copy { background: var(--accent); color: var(--accent-text); border-color: transparent; }
+  .fixes { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 6px; }
   .meta { font-size: 13.5px; color: var(--muted); margin: 12px 0 28px; }
   .or { font-size: 14px; font-weight: 600; margin: 0 0 8px; }
   .cmd {
@@ -174,18 +181,20 @@
       <div>
         <h1>Know what is slowing your Mac down.</h1>
         <p class="lede">A tiny menu bar app that watches memory, CPU, threads and disk. It names the app causing the slowdown and lets you quit it in one click.</p>
-        <a class="btn" href="https://github.com/rishavkr08/SysWatch/releases/latest/download/SysWatch.dmg">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-          Download for Mac
-        </a>
-        <p class="meta">Version 1.0.1 · macOS 14 Sonoma or later · Apple silicon and Intel · 1 MB</p>
-
-        <p class="or">Or install with one command</p>
-        <div class="cmd">
+        <p class="or">Install with one command <span class="pill">Recommended</span></p>
+        <div class="cmd primary">
           <code id="cmd">curl -fsSL https://github.com/rishavkr08/SysWatch/releases/latest/download/install.sh | sh</code>
           <button class="copy" id="copy" type="button">Copy</button>
         </div>
-        <p class="hint">Paste it into Terminal. It checks the download's checksum, installs to Applications and opens the app, with no security prompt to approve.</p>
+        <p class="hint">Open Terminal: press <kbd>⌘</kbd> <kbd>Space</kbd>, type <strong>Terminal</strong> and press Return. Paste the command and press Return. It installs SysWatch to Applications and opens it, with no security warning. Run it again any time to update.</p>
+        <p class="meta">Version 1.0.1 · macOS 14 Sonoma or later · Apple silicon and Intel · 1 MB</p>
+
+        <p class="or alt">Or download the app</p>
+        <a class="btn secondary" href="https://github.com/rishavkr08/SysWatch/releases/latest/download/SysWatch.dmg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download SysWatch.dmg
+        </a>
+        <p class="hint">macOS warns that it cannot check the app the first time you open it. <a href="#install">How to open it</a>.</p>
       </div>
 
       <figure class="shot" aria-label="SysWatch in the menu bar with its panel open, showing memory at 94 percent and Python using 7.7 GB">
@@ -229,14 +238,21 @@
     </section>
 
     <section aria-labelledby="install">
-      <h2 id="install">Installing from the download</h2>
+      <h2 id="install">Installing the downloaded app</h2>
       <ol class="steps">
         <li><span>Open <strong>SysWatch.dmg</strong> and drag SysWatch into the Applications folder.</span></li>
         <li><span>Open SysWatch from Applications. A dot with two percentages appears in the menu bar.</span></li>
         <li><span>When macOS asks whether SysWatch may send notifications, click <strong>Allow</strong>.</span></li>
         <li><span>Click the dot, then tick <strong>Launch at login</strong> in the panel's footer.</span></li>
       </ol>
-      <p class="note"><strong>If macOS says it cannot verify the developer,</strong> open <kbd>System Settings</kbd> › <kbd>Privacy &amp; Security</kbd>, scroll to the message about SysWatch, and click <kbd>Open Anyway</kbd>. You only do this once. The one-command install above skips this step.</p>
+      <div class="note">
+        <strong>If macOS says “SysWatch” can’t be opened because Apple cannot check it,</strong> click <kbd>OK</kbd>, then:
+        <ul class="fixes">
+          <li><strong>macOS 14 Sonoma:</strong> in Applications, Control-click SysWatch, choose <kbd>Open</kbd>, then click <kbd>Open</kbd> in the dialog.</li>
+          <li><strong>macOS 15 or later:</strong> open <kbd>System Settings</kbd> › <kbd>Privacy &amp; Security</kbd>, scroll to the message about SysWatch, and click <kbd>Open Anyway</kbd>.</li>
+        </ul>
+        <p style="margin: 10px 0 0">You only do this once. The warning appears because SysWatch is not notarized by Apple yet. The one-command install above avoids it.</p>
+      </div>
     </section>
   </main>
 

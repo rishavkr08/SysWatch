@@ -4,11 +4,20 @@ Menu bar monitor for macOS 14+. Native Swift/SwiftUI, no dependencies, ~25 MB id
 
 ## Install
 
-**Download:** [rishavkr08.github.io/SysWatch](https://rishavkr08.github.io/SysWatch/). Or paste this into Terminal, which installs it with no security prompt:
+**Recommended:** paste this into Terminal. It installs SysWatch to Applications and opens it, with no security warning. Run it again to update.
 
 ```sh
 curl -fsSL https://github.com/rishavkr08/SysWatch/releases/latest/download/install.sh | sh
 ```
+
+**Or download the app** from [rishavkr08.github.io/SysWatch](https://rishavkr08.github.io/SysWatch/), open the DMG and drag SysWatch to Applications.
+SysWatch is not notarized by Apple yet, so the first time you open it macOS says it "can't be opened because Apple cannot check it".
+Click OK, then:
+
+- **macOS 14 Sonoma:** in Applications, Control-click SysWatch, choose **Open**, then click **Open** in the dialog.
+- **macOS 15 or later:** open **System Settings › Privacy & Security**, scroll to the message about SysWatch, and click **Open Anyway**.
+
+You only do this once.
 
 ### Build from source
 
