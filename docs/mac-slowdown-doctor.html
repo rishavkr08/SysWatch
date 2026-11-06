@@ -104,6 +104,10 @@
   .card h3 { margin: 0 0 6px; font-size: 17px; }
   .card p { margin: 0; color: var(--muted); font-size: 15px; }
   ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 720px; }
+  .intro { margin: -8px 0 20px; color: var(--muted); max-width: 46em; }
+  .shotfig { margin: 0; }
+  .shotfig img { display: block; width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--line); box-shadow: 0 12px 32px rgba(0,0,0,.12); }
+  .shotfig figcaption { margin-top: 10px; color: var(--muted); font-size: 13.5px; }
 
   ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 14px; max-width: 720px; }
   ol.steps li { counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; }
@@ -159,7 +163,7 @@
     <div class="hero">
       <div>
         <h1>Ask your agent why your Mac is slow.</h1>
-        <p class="lede">A skill for AI coding agents. It checks memory, swap, CPU, disk and the processes your agent sessions left running, then tells you what is slowing your Mac down and fixes it with your approval.</p>
+        <p class="lede">A skill for AI coding agents. It checks memory, swap, CPU, disk and the processes your agent sessions left running, then tells you what is slowing your Mac down and fixes it with your approval. Ask for a visual report and it draws animated charts in your browser.</p>
         <a class="btn" href="https://www.agensi.io/">Get it free on Agensi</a>
         <p class="meta">Free · macOS · Claude Code, Codex, Gemini CLI, Cursor and other agents that can run terminal commands</p>
         <p class="meta">Pairs with <a href="#syswatch">SysWatch</a>, a free menu bar app that alerts you before your Mac slows down.</p>
@@ -189,10 +193,20 @@
       </div>
     </section>
 
+    <section aria-labelledby="visual">
+      <h2 id="visual">A visual report, on request</h2>
+      <p class="intro">Ask for a visual report and the agent samples your Mac for 30 seconds, then opens an animated page in your browser: gauges for memory pressure, swap, disk and CPU, CPU and memory charts over time, and the biggest apps and folders. Hover any chart for exact values. It works in light and dark mode, and needs no internet connection.</p>
+      <figure class="shotfig">
+        <img src="mac-health-report.png" width="1400" height="900" loading="lazy" alt="Example Mac Health Report: disk 97% full rated serious, swap 5.1 GB and CPU 88% rated warning, memory pressure normal, with a CPU chart showing a spike to 100% and a memory chart of compressed memory, swap and wired memory over 30 seconds">
+        <figcaption>A real report from a 16 GB M4 Mac. It caught a CPU spike to 100% while sampling.</figcaption>
+      </figure>
+    </section>
+
     <section aria-labelledby="safe">
       <h2 id="safe">Safe by design</h2>
       <ul class="plain">
         <li>It only reads until you approve a fix. It makes no network calls and never uses <code>sudo</code>.</li>
+        <li>The visual report is a single page saved in <code>/tmp</code>. It loads nothing from the internet.</li>
         <li>It asks before quitting, stopping or cleaning each item, one at a time.</li>
         <li>It never touches system processes such as kernel_task or WindowServer.</li>
         <li>It moves files to the Trash rather than deleting them, and prefers each tool's own cleanup command.</li>
@@ -212,6 +226,7 @@
         <span>My Mac is hot and the fan is loud</span>
         <span>I'm out of disk space</span>
         <span>What is using all my memory?</span>
+        <span>Show me a visual health report</span>
       </div>
       <p class="note">After the fixes it checks again and shows the numbers before and after.</p>
     </section>
